@@ -1,9 +1,8 @@
 #include "matrixmap.hpp"
-// #include <iostream>
 
 
 double BinaryMatrixMap::getCost(int nodeFrom, int nodeTo) const {
-    // check adjacency
+    // check adjacency?
     return 1;
 }
 
@@ -26,10 +25,6 @@ void BinaryMatrixMap::getAdj(int nodeId, int *adj_buf, int *adj_deg) const {
         botL = nodeId + W - 1,
         botC = nodeId + W,
         botR = nodeId + W + 1;
-    
-    // std::cout << topL << " " << topC << " " << topR << " " << std::endl;
-    // std::cout << midL << " " << nodeId << " " << midR << " " << std::endl;
-    // std::cout << botL << " " << botC << " " << botR << " " << std::endl;
     
     // checking adjacency requirements
     *adj_deg = 0;
@@ -99,21 +94,6 @@ point BinaryMatrixMap::getSize() const {
 }
 
 
-double Heuristic::Euclidian(const point& a, const point& b) {
-    return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
-}
-
-
-double Heuristic::Manhattan(const point& a, const point& b) {
-    return abs(a.x - b.x) + abs(a.y - b.y);
-}
-
-
-double Heuristic::Dijkstra(const point& a, const point& b) {
-    return 0;
-}
-
-
 double BinaryMatrixMap::heurDist(int nodeId_1, int nodeId_2) const {
     if (nodeId_1 >= data.size() || nodeId_2 >= data.size() || nodeId_1 < 0 || nodeId_2 < 0)
         throw std::invalid_argument("[BinaryMatrixMap] node id is out of range");
@@ -127,4 +107,19 @@ double BinaryMatrixMap::heurDist(int nodeId_1, int nodeId_2) const {
 
 void BinaryMatrixMap::setHeuristic(std::function<double(const point&, const point&)> hr) {
     this->hr = hr;
+}
+
+
+double Heuristic::Euclidian(const point& a, const point& b) {
+    return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y - b.y));
+}
+
+
+double Heuristic::Manhattan(const point& a, const point& b) {
+    return abs(a.x - b.x) + abs(a.y - b.y);
+}
+
+
+double Heuristic::Dijkstra(const point& a, const point& b) {
+    return 0;
 }

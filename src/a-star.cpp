@@ -4,12 +4,13 @@
 std::vector<int> A_star(
     Map *map, 
     int nodeIdFrom, int nodeIdTo, 
-    OC_Container& OC
+    OC_Container& OC,
+    size_t adj_buf_prealloc
 ) {
     OC.open(nodeIdFrom, nodeIdFrom, 0, map->heurDist(nodeIdFrom, nodeIdTo));
 
     int    cur_id, adj_cur;
-    int    deg, adj_buf[MAX_BMAP_ADJ];
+    int    deg, adj_buf[adj_buf_prealloc];
     double cur_gval, adj_gval;
 
     while(!OC.empty()) {
@@ -32,6 +33,7 @@ std::vector<int> A_star(
 
         for (int i = 0; i < deg; i++) {
             if(!OC.isClosed(adj_buf[i])) {
+                // updating fvalue/gvalue for current adj node
                 if (
                     !OC.isOpened(adj_buf[i]) || 
                     (

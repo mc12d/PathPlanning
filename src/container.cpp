@@ -1,11 +1,5 @@
 #include "container.hpp"
 
-#include <functional>
-#include <queue>
-#include <unordered_map>
-#include <algorithm>
-#include <iostream>
-
 
 const size_t DEFAULT_PREALLOC = 4096;
 
@@ -24,7 +18,6 @@ void OC_STL::open(int nodeId, int parentId, double gval, double fval) {
 
 
 void OC_STL::close(int nodeId) {
-    // node_info_map.erase(nodeId);
     opened.erase(nodeId);
     closed.insert(nodeId);
 }
@@ -46,7 +39,6 @@ void OC_STL::pop() {
 
     int id = prq.top().id;
     prq.pop();
-    // node_info_map.erase(id);
     opened.erase(id);
 }
 
@@ -78,8 +70,6 @@ bool OC_STL::isOpened(int nodeId) const {
 
 
 int OC_STL::parent(int nodeId) const {
-    // if (!isOpened(nodeId))
-    //    throw std::invalid_argument("[OC_STL::parent] nodeId does not exist");
     return node_info_map.at(nodeId).parent;
 }
 
