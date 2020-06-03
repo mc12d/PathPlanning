@@ -2,7 +2,7 @@
 #include "../src/container.hpp"
 #include "../src/a-star.hpp"
 #include "catch.hpp"
-#include <iostream>
+#include <fstream>
 
 
 TEST_CASE("MatrixMap") {
@@ -63,8 +63,8 @@ TEST_CASE("OC_STL") {
 }
 
 
-TEST_CASE("A_star", "Simple test") {
-    int w = 7, h = 7;
+TEST_CASE("A_star") {
+    int w = 7, h = 4;
     std::vector<bool> mtx1 = {
         0, 0, 0, 0, 0, 0, 0,
         0, 1, 1, 0, 0, 1, 1,
@@ -98,4 +98,25 @@ TEST_CASE("A_star", "Simple test") {
     res = A_star(&map, 0, 0, oc);
     REQUIRE(res == std::vector<int>({0}));
     
+}
+
+
+TEST_CASE("A_star_city") {
+    auto map = BinaryMatrixMap("../test/Shanghai_2_1024.map");
+
+    REQUIRE(map.getSize().x == 1024);
+    REQUIRE(map.getSize().y == 1024);
+    
+
+    map.exportBMP("map.bmp");
+    map.setHeuristic(Heuristic::Manhattan);
+
+    int from = 0, to = 1024 * 1024 - 1;
+    REQUIRE(!map.getValue(from));
+    REQUIRE(!map.getValue(to));
+
+    auto oc = OC_STL();
+    std::vector<int> p = A_star(&map, to, from, oc);
+    WARN("A_star_city : Found path length : " + std::to_string(p.size()));
+
 }

@@ -13,6 +13,7 @@ void BinaryMatrixMap::getAdj(int nodeId, int *adj_buf, int *adj_deg) const {
     if (adj_buf == NULL)
         throw std::invalid_argument("getAdj : adj_buf must be preallocated");
 
+    *adj_deg = 0;
     // assuming there is no paths from the obstacle cell
     if (data[nodeId])
         return;
@@ -27,7 +28,6 @@ void BinaryMatrixMap::getAdj(int nodeId, int *adj_buf, int *adj_deg) const {
         botR = nodeId + W + 1;
     
     // checking adjacency requirements
-    *adj_deg = 0;
     if (topL >= 0 && nodeId % W != 0)                if (!data[topL]) {adj_buf[*adj_deg] = topL; (*adj_deg)++;}
     if (topC >= 0)                                   if (!data[topC]) {adj_buf[*adj_deg] = topC; (*adj_deg)++;}
     if (topR >= 0 && nodeId % W != W - 1)            if (!data[topR]) {adj_buf[*adj_deg] = topR; (*adj_deg)++;}
@@ -51,7 +51,7 @@ BinaryMatrixMap::BinaryMatrixMap(const char* map_file_name) {
     do {
         inp >> buf;
         for (int i = 0; i < buf.size(); i++)
-            data.push_back(buf[i] == '.' || buf[i] == 'G');
+            data.push_back(!(buf[i] == '.' || buf[i] == 'G'));
     } while (!inp.eof());
     
     inp.close();
@@ -73,7 +73,7 @@ unsigned char* BinaryMatrixMap::exportImageArray() const {
 
     for (int i = 0; i < H; i++)
         for (int j = 0; j < W; j++) {
-            if(data[i * W + j]) 
+            if(!data[i * W + j]) 
                 img[H - 1 - i][j][0] = 255, img[H - 1 - i][j][1] = 255, img[H - 1 - i][j][2] = 255;
             else
                 img[H - 1 - i][j][0] = 0,   img[H - 1 - i][j][1] = 0,   img[H - 1 - i][j][2] = 0;
@@ -96,7 +96,10 @@ point BinaryMatrixMap::getSize() const {
 
 double BinaryMatrixMap::heurDist(int nodeId_1, int nodeId_2) const {
     if (nodeId_1 >= data.size() || nodeId_2 >= data.size() || nodeId_1 < 0 || nodeId_2 < 0)
-        throw std::invalid_argument("[BinaryMatrixMap] node id is out of range");
+        throw std::invalid_argument(
+            "[BinaryMatrixMap::heurDist] node id is out of range : " + 
+            std::to_string(nodeId_1) + " " + 
+            std::to_string(nodeId_2) + "\n");
 
     return hr(
         {nodeId_1 % W, nodeId_1 / W}, 
@@ -107,6 +110,11 @@ double BinaryMatrixMap::heurDist(int nodeId_1, int nodeId_2) const {
 
 void BinaryMatrixMap::setHeuristic(std::function<double(const point&, const point&)> hr) {
     this->hr = hr;
+}
+
+
+bool BinaryMatrixMap::getValue(int nodeId) const {
+    return data[nodeId];
 }
 
 

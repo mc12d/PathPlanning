@@ -29,6 +29,7 @@ public :
     unsigned char* exportImageArray()                              const;
     point          getSize()                                       const;
     double         heurDist(int nodeId_1, int nodeId_2)            const;
+    bool           getValue(int nodeId)                            const;
 
     void           setHeuristic(std::function<double(const point&, const point&)>);
 

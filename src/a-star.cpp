@@ -7,6 +7,7 @@ std::vector<int> A_star(
     OC_Container& OC,
     size_t adj_buf_prealloc
 ) {
+    map->heurDist(nodeIdFrom, nodeIdTo);
     OC.open(nodeIdFrom, nodeIdFrom, 0, map->heurDist(nodeIdFrom, nodeIdTo));
 
     int    cur_id, adj_cur;
@@ -42,7 +43,7 @@ std::vector<int> A_star(
                     )
                 ) {
                     adj_gval = cur_gval + map->getCost(cur_id, adj_buf[i]);
-                    OC.open(adj_buf[i], cur_id, adj_gval, adj_gval + map->heurDist(adj_buf[i], nodeIdTo));
+                    OC.open(adj_buf[i], cur_id, adj_gval, adj_gval + map->heurDist(nodeIdTo, adj_buf[i]));
                 }
                 
             }
