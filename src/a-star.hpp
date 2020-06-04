@@ -6,7 +6,7 @@
 
 
 std::vector<int> A_star(
-    Map *map, 
+    Map& map, 
     int nodeIdFrom, int nodeIdTo, 
     OC_Container& OC,
     size_t adj_buf_prealloc = 100

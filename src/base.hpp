@@ -1,5 +1,5 @@
-#ifndef BBASE_H
-#define BBASE_H
+#ifndef BASE_H
+#define BASE_H
 
 
 #include <vector>
@@ -42,6 +42,9 @@ public :
     virtual ~OC_Container() {};
 
 };
+
+
+bool operator == (const point& a, const point& b);
 
 
 #endif

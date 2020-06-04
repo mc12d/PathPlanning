@@ -1,6 +1,7 @@
 #include "../src/matrixmap.hpp"
 #include "../src/container.hpp"
 #include "../src/a-star.hpp"
+#include "../src/search.hpp"
 #include "catch.hpp"
 #include <fstream>
 
@@ -83,19 +84,19 @@ TEST_CASE("A_star") {
     std::vector<int> gr_truth_4_23 = {4, 10, 2, 1, 7, 15, 23};
     std::vector<int> gr_truth_4_20 = {};
 
-    res = A_star(&map, 0, 15, oc);
+    res = A_star(map, 0, 15, oc);
     REQUIRE(res == gr_truth_0_11);
 
     oc = OC_STL();
-    res = A_star(&map, 4, 23, oc);
+    res = A_star(map, 4, 23, oc);
     REQUIRE(res == gr_truth_4_23);
 
     oc = OC_STL();
-    res = A_star(&map, 4, 20, oc);
+    res = A_star(map, 4, 20, oc);
     REQUIRE(res == gr_truth_4_20);
 
     oc = OC_STL();
-    res = A_star(&map, 0, 0, oc);
+    res = A_star(map, 0, 0, oc);
     REQUIRE(res == std::vector<int>({0}));
     
 }
@@ -116,7 +117,24 @@ TEST_CASE("A_star_city") {
     REQUIRE(!map.getValue(to));
 
     auto oc = OC_STL();
-    std::vector<int> p = A_star(&map, to, from, oc);
+    std::vector<int> p = A_star(map, to, from, oc);
     WARN("A_star_city : Found path length : " + std::to_string(p.size()));
 
+}
+
+
+TEST_CASE("Search") {
+    auto s = AStarSearch("../test/Shanghai_2_1024.map");
+
+    REQUIRE(s.pointToId({2, 2}) == 1024 * 2 + 2);
+    REQUIRE(s.idToPoint(1025).x == 1);
+    REQUIRE(s.idToPoint(1025).y == 1);
+    REQUIRE(s.idToPoint(1024 * 1024 - 1) == point({1023, 1023}));
+
+    s.setTargets({0, 0}, {1023, 1023});
+    s.setHeuristic(Heuristic::Euclidian);
+    auto path = s.run();
+    REQUIRE(path.size() == 1150);
+
+    s.exportPathBMP("path.bmp");
 }

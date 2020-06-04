@@ -24,7 +24,6 @@ public :
 
     double         getCost(int nodeFrom, int nodeTo)               const;
     void           getAdj (int nodeId, int *adj_buf, int *adj_deg) const;
-    point          nodeIdToCoord(int nodeId)                       const;
     void           exportBMP(const char *file_name)                const;
     unsigned char* exportImageArray()                              const;
     point          getSize()                                       const;
