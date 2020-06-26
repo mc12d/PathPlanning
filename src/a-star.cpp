@@ -7,7 +7,7 @@ std::vector<int> A_star(
     OC_Container& OC,
     size_t adj_buf_prealloc
 ) {
-    map.heurDist(nodeIdFrom, nodeIdTo); // this checks that node ids are consistent
+    map.heurDist(nodeIdFrom, nodeIdTo);
     OC.open(nodeIdFrom, nodeIdFrom, 0, map.heurDist(nodeIdFrom, nodeIdTo));
 
     int    cur_id, adj_cur;
@@ -32,21 +32,14 @@ std::vector<int> A_star(
         OC.pop();
         OC.close(cur_id);
 
-        // iterating over adj nodes
         map.getAdj(cur_id, adj_buf, &deg);
         for (int i = 0; i < deg; i++) {
-            if(!OC.isClosed(adj_buf[i])) {
-                // updating fvalue/gvalue for current adj node
-                if (
-                    !OC.isOpened(adj_buf[i]) || 
-                    (
-                        OC.isOpened(adj_buf[i]) && 
-                        cur_gval + map.getCost(cur_id, adj_buf[i]) < OC.getGValue(adj_buf[i])    
-                    )
-                ) {
-                    adj_gval = cur_gval + map.getCost(cur_id, adj_buf[i]);
-                    OC.open(adj_buf[i], cur_id, adj_gval, adj_gval + map.heurDist(nodeIdTo, adj_buf[i]));
-                }
+            adj_gval = cur_gval + map.getCost(cur_id, adj_buf[i]);
+            if (
+                (!OC.isClosed(adj_buf[i]) && !OC.isOpened(adj_buf[i])) ||
+                (OC.getGValue(adj_buf[i]) > adj_gval)
+            ) {
+                OC.open(adj_buf[i], cur_id, adj_gval, adj_gval + map.heurDist(nodeIdTo, adj_buf[i]));
             }
         }
     }

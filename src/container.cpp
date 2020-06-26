@@ -5,14 +5,18 @@ const size_t DEFAULT_PREALLOC = 4096;
 
 
 OC_STL::OC_STL()
-: opened(DEFAULT_PREALLOC)
-, closed(DEFAULT_PREALLOC)    
+: opened()
+, closed()
 {}
 
 
 void OC_STL::open(int nodeId, int parentId, double gval, double fval) {
     prq.push({nodeId, fval});
     opened.insert(nodeId);
+
+    if (isClosed(nodeId))
+        closed.erase(nodeId);
+
     node_info_map[nodeId] = {parentId, gval};
 }
 
@@ -24,7 +28,7 @@ void OC_STL::close(int nodeId) {
 
 
 double OC_STL::getGValue(int nodeId) const {
-    if (!isOpened(nodeId))
+    if (!isOpened(nodeId) && !isClosed(nodeId))
         throw std::invalid_argument("[OC_STL::getGValue] nodeId does not exist");
     return node_info_map.at(nodeId).gval;
 }

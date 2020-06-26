@@ -107,7 +107,6 @@ TEST_CASE("A_star_city") {
 
     REQUIRE(map.getSize().x == 1024);
     REQUIRE(map.getSize().y == 1024);
-    
 
     map.exportBMP("map.bmp");
     map.setHeuristic(Heuristic::Manhattan);
@@ -119,7 +118,6 @@ TEST_CASE("A_star_city") {
     auto oc = OC_STL();
     std::vector<int> p = A_star(map, to, from, oc);
     WARN("A_star_city : Found path length : " + std::to_string(p.size()));
-
 }
 
 
@@ -137,4 +135,9 @@ TEST_CASE("Search") {
     REQUIRE(path.size() == 1150);
 
     s.exportPathBMP("path.bmp");
+}
+
+
+TEST_CASE("custom_graph") {
+    
 }
