@@ -138,6 +138,61 @@ TEST_CASE("Search") {
 }
 
 
+class customGraph : public Map {
+    virtual double getCost(int nodeFrom, int nodeTo) const {
+        if (nodeFrom > nodeTo) std::swap(nodeFrom, nodeTo);
+        if (nodeFrom == 0 && nodeTo == 1) return 5;
+        if (nodeFrom == 0 && nodeTo == 4) return 2;
+        if (nodeFrom == 0 && nodeTo == 2) return 3;
+        if (nodeFrom == 1 && nodeTo == 4) return 2;
+        if (nodeFrom == 1 && nodeTo == 3) return 2;
+        if (nodeFrom == 2 && nodeTo == 3) return 5;
+
+        throw std::invalid_argument("getCost : edge does not exist");
+    }
+    virtual double heurDist(int nodeFrom, int nodeTo) const {
+        if (nodeFrom == 0 && nodeTo == 3) return 7;
+        if (nodeFrom == 1 && nodeTo == 3) return 0;
+        if (nodeFrom == 2 && nodeTo == 3) return 5;
+        if (nodeFrom == 3 && nodeTo == 3) return 0;
+        if (nodeFrom == 4 && nodeTo == 3) return 4;
+        throw std::invalid_argument("heurDist : No such node : " + 
+            std::to_string(nodeFrom) + " " + std::to_string(nodeTo));
+    }
+    virtual void   getAdj (int nodeId, int *adj_buf, int *adj_deg) const {
+        switch(nodeId) {
+            case 0 : 
+                adj_buf[0] = 1, adj_buf[1] = 4, adj_buf[2] = 2;
+                *adj_deg = 3;
+                break;
+            case 1 :
+                adj_buf[0] = 0, adj_buf[1] = 3, adj_buf[2] = 4;
+                *adj_deg = 3;
+                break;
+            case 2 :
+                adj_buf[0] = 0, adj_buf[1] = 3;
+                *adj_deg = 2;
+                break;
+            case 3 :
+                adj_buf[0] = 2, adj_buf[1] = 1;
+                *adj_deg = 2;
+                break;
+            case 4 :
+                adj_buf[0] = 0, adj_buf[1] = 1;
+                *adj_deg = 2;
+                break;
+            default :
+                throw std::invalid_argument("getAdg : No such node.");
+        }
+    }
+};
+
+
 TEST_CASE("custom_graph") {
-    
+    customGraph gr;
+    OC_STL oc;
+
+    auto res = A_star(gr, 0, 3, oc);
+    std::vector<int> res_gr = {0, 4, 1, 3};
+    REQUIRE(res == res_gr);
 }
